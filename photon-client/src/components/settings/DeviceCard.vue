@@ -419,6 +419,11 @@ watch(metricsHistorySnapshot, () => {
             </v-col>
           </v-row>
         </v-card-text>
+        <!-- Legal notices: NAPA's GPL section 7(b) term requires crediting its author here. -->
+        <v-card-text class="pt-0 flex-0-0 text-caption">
+          PhotonVision is GPLv3. The NAPA AprilTag detector (AprilTag tab, "Detector: NAPA") is by Zachary Wilson
+          (github.com/zwatx/NAPA), GPL-3.0-only; see ExternalLicenses/NAPA-License.
+        </v-card-text>
       </v-card>
     </v-col>
 

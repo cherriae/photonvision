@@ -35,6 +35,18 @@ public class AprilTagPipelineSettings extends AdvancedPipelineSettings {
     public boolean doMultiTarget = false;
     public boolean doSingleTargetAlways = false;
 
+    // NAPA, the CPU AprilTag detector by Zachary Wilson (NapaDetectorJNI; GPL-3.0-only), instead of
+    // AprilTag 3 (needs libphoton-napa, photon-napa/build.sh). Decimate, blur, threads and refine
+    // edges are AprilTag 3's and don't apply; napaMaxHamming replaces hammingDist. Min tag px 16 and
+    // max hamming 1 are what Spectrum 3847 measured best on field recordings (NAPA's own default,
+    // 32 px, is ~5x faster but misses small tags). Far search: the full frame at 32 px, and
+    // napaFarMinTagPx only around tags seen recently and in capped sweeps.
+    public boolean useNapa = false;
+    public int napaMinTagPx = 16;
+    public int napaMaxHamming = 1;
+    public boolean napaFarSearch = false;
+    public int napaFarMinTagPx = 16;
+
     // 3d settings
 
     public AprilTagPipelineSettings() {
@@ -63,6 +75,11 @@ public class AprilTagPipelineSettings extends AdvancedPipelineSettings {
         result = prime * result + decisionMargin;
         result = prime * result + (doMultiTarget ? 1231 : 1237);
         result = prime * result + (doSingleTargetAlways ? 1231 : 1237);
+        result = prime * result + (useNapa ? 1231 : 1237);
+        result = prime * result + napaMinTagPx;
+        result = prime * result + napaMaxHamming;
+        result = prime * result + (napaFarSearch ? 1231 : 1237);
+        result = prime * result + napaFarMinTagPx;
         return result;
     }
 
@@ -83,6 +100,11 @@ public class AprilTagPipelineSettings extends AdvancedPipelineSettings {
         if (decisionMargin != other.decisionMargin) return false;
         if (doMultiTarget != other.doMultiTarget) return false;
         if (doSingleTargetAlways != other.doSingleTargetAlways) return false;
+        if (useNapa != other.useNapa) return false;
+        if (napaMinTagPx != other.napaMinTagPx) return false;
+        if (napaMaxHamming != other.napaMaxHamming) return false;
+        if (napaFarSearch != other.napaFarSearch) return false;
+        if (napaFarMinTagPx != other.napaFarMinTagPx) return false;
         return true;
     }
 }

@@ -47,6 +47,8 @@ import org.photonvision.vision.pipe.impl.AprilTagPoseEstimatorPipe.AprilTagPoseE
 import org.photonvision.vision.pipe.impl.CalculateFPSPipe;
 import org.photonvision.vision.pipe.impl.MultiTargetPNPPipe;
 import org.photonvision.vision.pipe.impl.MultiTargetPNPPipe.MultiTargetPNPPipeParams;
+import org.photonvision.vision.pipe.impl.NapaDetectionPipe;
+import org.photonvision.vision.pipe.impl.NapaDetectionPipe.NapaDetectionPipeParams;
 import org.photonvision.vision.pipeline.result.CVPipelineResult;
 import org.photonvision.vision.target.TrackedTarget;
 import org.photonvision.vision.target.TrackedTarget.TargetCalculationParameters;
@@ -55,6 +57,7 @@ public class AprilTagPipeline extends CVPipeline<CVPipelineResult, AprilTagPipel
     private static final Logger logger = new Logger(AprilTagPipeline.class, LogGroup.VisionModule);
 
     private final AprilTagDetectionPipe aprilTagDetectionPipe = new AprilTagDetectionPipe();
+    private final NapaDetectionPipe napaDetectionPipe = new NapaDetectionPipe();
     private final AprilTagPoseEstimatorPipe singleTagPoseEstimatorPipe =
             new AprilTagPoseEstimatorPipe();
     private final MultiTargetPNPPipe multiTagPNPPipe = new MultiTargetPNPPipe();
@@ -107,6 +110,13 @@ public class AprilTagPipeline extends CVPipeline<CVPipelineResult, AprilTagPipel
 
         aprilTagDetectionPipe.setParams(
                 new AprilTagDetectionPipeParams(settings.tagFamily, config, quadParams));
+        napaDetectionPipe.setParams(
+                new NapaDetectionPipeParams(
+                        settings.tagFamily,
+                        settings.napaMinTagPx,
+                        settings.napaMaxHamming,
+                        settings.napaFarSearch,
+                        settings.napaFarMinTagPx));
 
         if (frameStaticProperties.cameraCalibration != null) {
             var cameraMatrix = frameStaticProperties.cameraCalibration.getCameraIntrinsicsMat();
@@ -139,8 +149,13 @@ public class AprilTagPipeline extends CVPipeline<CVPipelineResult, AprilTagPipel
             return new CVPipelineResult(frame.sequenceID, 0, 0, List.of(), frame);
         }
 
+        // NAPA when selected and installed; otherwise AprilTag 3. NAPA's corners are in OpenCV's pixel
+        // convention (AprilTag 3's are 0.5 px larger), which is the camera calibration's.
+        boolean useNapa = settings.useNapa && NapaDetectionPipe.isAvailable();
         CVPipeResult<List<AprilTagDetection>> tagDetectionPipeResult =
-                aprilTagDetectionPipe.run(frame.processedImage);
+                useNapa
+                        ? napaDetectionPipe.run(frame.processedImage)
+                        : aprilTagDetectionPipe.run(frame.processedImage);
         sumPipeNanosElapsed += tagDetectionPipeResult.nanosElapsed;
 
         List<AprilTagDetection> detections = tagDetectionPipeResult.output;
@@ -151,7 +166,10 @@ public class AprilTagPipeline extends CVPipeline<CVPipelineResult, AprilTagPipel
         for (AprilTagDetection detection : detections) {
             // TODO this should be in a pipe, not in the top level here (Matt)
             if (detection.getDecisionMargin() < settings.decisionMargin) continue;
-            if (detection.getHamming() > settings.hammingDist) continue;
+            // NAPA's limit is napaMaxHamming. Still filter: for tag16h5 its soft decode can correct 2
+            // bits even when napaMaxHamming is lower.
+            int maxHamming = useNapa ? settings.napaMaxHamming : settings.hammingDist;
+            if (detection.getHamming() > maxHamming) continue;
 
             usedDetections.add(detection);
 
@@ -253,6 +271,7 @@ public class AprilTagPipeline extends CVPipeline<CVPipelineResult, AprilTagPipel
     @Override
     public void release() {
         aprilTagDetectionPipe.release();
+        napaDetectionPipe.release();
         singleTagPoseEstimatorPipe.release();
         super.release();
     }

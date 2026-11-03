@@ -26,6 +26,7 @@ public class UIGeneralSettings {
             String imageVersion,
             String gpuAcceleration,
             boolean mrCalWorking,
+            boolean napaWorking,
             NeuralNetworkModelsSettings.ModelProperties[] availableModels,
             List<String> supportedBackends,
             String hardwareModel,
@@ -37,6 +38,7 @@ public class UIGeneralSettings {
         this.imageVersion = imageVersion;
         this.gpuAcceleration = gpuAcceleration;
         this.mrCalWorking = mrCalWorking;
+        this.napaWorking = napaWorking;
         this.availableModels = availableModels;
         this.supportedBackends = supportedBackends;
         this.hardwareModel = hardwareModel;
@@ -50,6 +52,7 @@ public class UIGeneralSettings {
     public String imageVersion;
     public String gpuAcceleration;
     public boolean mrCalWorking;
+    public boolean napaWorking; // libphoton-napa (the NAPA AprilTag detector) is installed
     public NeuralNetworkModelsSettings.ModelProperties[] availableModels;
     public List<String> supportedBackends;
     public String hardwareModel;

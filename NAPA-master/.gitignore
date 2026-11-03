@@ -1,0 +1,35 @@
+.DS_Store
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.jsonl
+simulation-output/
+# Third-party builds, venvs and scratch for benchmarks/cpu_comparison.py
+work/
+
+# Native core built in place by editable installs
+src/napa_vision/_native/*.so
+src/napa_vision/_native/*.pyd
+src/napa_vision/_native/*.dylib
+
+# Private working files: plans, reports, research, and local developer docs
+.plans/
+local-docs/
+*.html
+experiments/
+benchmarks/notes/
+
+# Markdown is private except the published guides
+*.md
+!README.md
+!benchmarks/README.md
+!docs/*.md
+!benchmarks/results/**/*.md

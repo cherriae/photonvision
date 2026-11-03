@@ -228,6 +228,11 @@ export interface AprilTagPipelineSettings extends PipelineSettings {
   tagFamily: AprilTagFamily;
   doMultiTarget: boolean;
   doSingleTargetAlways: boolean;
+  useNapa: boolean; // NAPA detector instead of AprilTag 3
+  napaMinTagPx: number;
+  napaMaxHamming: number;
+  napaFarSearch: boolean;
+  napaFarMinTagPx: number;
 }
 export type ConfigurableAprilTagPipelineSettings = Partial<
   Omit<AprilTagPipelineSettings, "pipelineType" | "hammingDist" | "debug">
@@ -251,7 +256,12 @@ export const DefaultAprilTagPipelineSettings: AprilTagPipelineSettings = {
   threads: 4,
   tagFamily: AprilTagFamily.Family36h11,
   doMultiTarget: false,
-  doSingleTargetAlways: false
+  doSingleTargetAlways: false,
+  useNapa: false,
+  napaMinTagPx: 16,
+  napaMaxHamming: 1,
+  napaFarSearch: false,
+  napaFarMinTagPx: 16
 };
 
 export interface ArucoPipelineSettings extends PipelineSettings {

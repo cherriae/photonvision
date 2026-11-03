@@ -1,0 +1,3 @@
+# Built on the coprocessor (often copied over from a Windows checkout): keep LF so bash, patch and gcc
+# see the same bytes everywhere. The patches only apply to LF sources.
+* text eol=lf
