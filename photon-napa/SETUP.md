@@ -8,7 +8,7 @@ it starts. You install it once. After that you turn it on and off with a switch 
 ## What to bring
 
 - [ ] Laptop with this repo (branch `2026`)
-- [ ] The jar: `photon-server\build\libs\photonvision-v2026.7-linuxarm64.jar`
+- [ ] The jar: `photon-server\build\libs\photonvision-dev-v2026.7-1-g177076b9-linuxarm64.jar`
 - [ ] An Ethernet cable
 - [ ] A tape measure and a printed AprilTag (for the distance check)
 
@@ -62,7 +62,7 @@ it, and then you redo Part 1.
 
 1. Open <http://photonvision.local:5800> and go to **Settings**.
 2. **Export settings** first, so you have a backup.
-3. Under **Offline Update**, pick `photonvision-v2026.7-linuxarm64.jar`. Wait for PhotonVision to restart and the
+3. Under **Offline Update**, pick `photonvision-dev-v2026.7-1-g177076b9-linuxarm64.jar`. Wait for PhotonVision to restart and the
    UI to come back.
 4. In **Settings**, scroll to the legal notice at the bottom of the device card. It should credit Zachary Wilson for
    NAPA. If it does, the new jar is running.
